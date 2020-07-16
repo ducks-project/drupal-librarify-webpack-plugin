@@ -41,7 +41,7 @@ class DrupalLibrarifyWebpackPlugin {
     const moduleBasename = path.basename(path.resolve(process.cwd()));
     const yamlFilename = `${moduleBasename}.libraries.yml`;
     const yamlFilepath = `${modulePathname}/${yamlFilename}`;
-    const libraryName = this.options.prefix + moduleBasename;
+    const libraryName = `${this.options.prefix}${moduleBasename}`;
 
     let libraries = {};
     if (fs.existsSync(yamlFilepath)) {
