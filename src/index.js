@@ -86,21 +86,12 @@ class DrupalLibrarifyWebpackPlugin {
     });
 
     // Create new file assets.
-    // fs.writeFileSync(yamlFilepath, yaml.dump(libraries));
+    // we are currently afterEmit so compilation.assets cannot be used.
     if (
       !isEmpty(libraries[libraryName].js) ||
       !isEmpty(libraries[libraryName].css.theme)
     ) {
-      const content = yaml.dump(libraries);
-      const yamlAsset = {
-        source() {
-          return content;
-        },
-        size() {
-          return content.length;
-        },
-      };
-      compilation.assets[yamlFilename] = yamlAsset;
+      fs.writeFileSync(yamlFilepath, yaml.dump(libraries));
     }
   }
 }
