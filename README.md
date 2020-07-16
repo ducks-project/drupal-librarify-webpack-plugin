@@ -18,10 +18,10 @@ Prepare and create the library.yml file for Drupal.
 
 ## Getting Started
 
-To begin, you'll need to install `drupal-librariry-webpack-plugin`:
+To begin, you'll need to install `drupal-librarify-webpack-plugin`:
 
 ```console
-$ npm install drupal-librariry-webpack-plugin --save-dev
+$ npm install drupal-librarify-webpack-plugin --save-dev
 ```
 
 Then add the plugin to your `webpack` config. For example:
@@ -29,7 +29,7 @@ Then add the plugin to your `webpack` config. For example:
 **webpack.config.js**
 
 ```js
-const DrupalLibrarifyPlugin = require('drupal-librariry-webpack-plugin');
+const DrupalLibrarifyPlugin = require('drupal-librarify-webpack-plugin');
 
 module.exports = {
   plugins: [new DrupalLibrarifyPlugin()],
