@@ -1,8 +1,25 @@
 {
   "type": "object",
   "properties": {
+    "version": {
+      "description": "A version for your library.",
+      "anyOf": [{ "type": "boolean" }, { "type": "string" }]
+    },
+    "header": {
+      "description": "Attached library assets in the header.",
+      "type": ["boolean"]
+    },
     "prefix": {
+      "description": "A prefix for naming your library.",
       "type": ["string"]
+    },
+    "dependencies": {
+      "description": "Manually specify the dependencies for your library.",
+      "anyOf": [{ "type": "array" }, { "type": "object" }]
+    },
+    "weight": {
+      "description": "Adjusts order relative to other assets. Discouraged for JS.",
+      "type": ["number"]
     }
   },
   "additionalProperties": false
