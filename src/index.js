@@ -87,6 +87,16 @@ class DrupalLibrarifyWebpackPlugin {
       libraries[libraryName] = {};
     }
 
+    // Add version
+    if (this.option.version) {
+      libraries[libraryName].version = this.options.version;
+    }
+
+    // Add header
+    if (this.option.header) {
+      libraries[libraryName].header = this.options.header;
+    }
+
     // Init js and css entry
     libraries[libraryName].js = {};
     libraries[libraryName].css = {
