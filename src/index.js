@@ -31,20 +31,20 @@ class DrupalLibrarifyWebpackPlugin {
     });
 
     // Normalize dependencies
-    if (Array.isArray(this.options.dependencies)) {
+    if (Array.isArray(options.dependencies)) {
       const entries = new Map();
-      this.options.dependencies.forEach((dependency) =>
+      options.dependencies.forEach((dependency) =>
         entries.set(dependency, true)
       );
-      this.options.dependencies = Object.fromEntries(entries);
+      options.dependencies = Object.fromEntries(entries);
     }
-    this.options.dependencies = {
+    options.dependencies = {
       ...dependencies,
-      ...this.options.dependencies,
+      ...options.dependencies,
     };
-    this.options.dependencies = Object.keys(this.options.dependencies).filter(
+    options.dependencies = Object.keys(options.dependencies).filter(
       (dependency) => {
-        return this.options.dependencies[dependency];
+        return options.dependencies[dependency];
       }
     );
 
@@ -130,15 +130,15 @@ class DrupalLibrarifyWebpackPlugin {
     libraries[libraryName].dependencies = this.options.dependencies;
 
     // Purge
-    if (!isEmpty(libraries[libraryName].js)) {
+    if (isEmpty(libraries[libraryName].js)) {
       delete libraries[libraryName].js;
     }
     for (const property in libraries[libraryName].css) {
-      if (!isEmpty(libraries[libraryName].css[property])) {
+      if (isEmpty(libraries[libraryName].css[property])) {
         delete libraries[libraryName].css[property];
       }
     }
-    if (!isEmpty(this.options.dependencies)) {
+    if (isEmpty(this.options.dependencies)) {
       delete libraries[libraryName].dependencies;
     }
 
