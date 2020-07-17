@@ -88,12 +88,12 @@ class DrupalLibrarifyWebpackPlugin {
     }
 
     // Add version
-    if (this.option.version) {
+    if (this.options.version) {
       libraries[libraryName].version = this.options.version;
     }
 
     // Add header
-    if (this.option.header) {
+    if (this.options.header) {
       libraries[libraryName].header = this.options.header;
     }
 
