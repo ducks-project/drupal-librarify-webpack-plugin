@@ -21,6 +21,9 @@ class DrupalLibrarifyWebpackPlugin {
       prefix: 'drupal.',
       version: false,
       header: false,
+      minified: 'auto',
+      js: {},
+      css: {},
       dependencies,
       ...opts,
     };
@@ -89,12 +92,25 @@ class DrupalLibrarifyWebpackPlugin {
 
     // Add version
     if (this.options.version) {
+      if (this.options.version === true) {
+        const raw =
+          fs.readFileSync(`${modulePathname}/package.json`, 'utf8') || '{}';
+        const pkg = JSON.parse(raw);
+        if (typeof pkg.version !== 'undefined') {
+          this.options.version = pkg.version;
+        }
+      }
       libraries[libraryName].version = this.options.version;
     }
 
     // Add header
     if (this.options.header) {
       libraries[libraryName].header = this.options.header;
+    }
+
+    // Guess minified
+    if (this.options.minified === 'auto') {
+      this.options.minified = compilation.options.optimization.mnimize;
     }
 
     // Init js and css entry
@@ -116,17 +132,33 @@ class DrupalLibrarifyWebpackPlugin {
           modulePathname,
           path.resolve(compilation.compiler.outputPath, filename)
         );
+
+        let options = {};
         switch (extname) {
           case '.js':
-            libraries[libraryName].js[pathname] = {
+            options = {
               preprocess: false,
             };
+            if (typeof this.options.js[pathname] !== 'undefined') {
+              options = {
+                ...options,
+                ...this.options.js[pathname],
+              };
+            }
+            libraries[libraryName].js[pathname] = options;
             break;
 
           case '.css':
-            libraries[libraryName].css.theme[pathname] = {
-              minified: true,
+            options = {
+              minified: this.options.minified,
             };
+            if (typeof this.options.css[pathname] !== 'undefined') {
+              options = {
+                ...options,
+                ...this.options.css[pathname],
+              };
+            }
+            libraries[libraryName].css.theme[pathname] = options;
             break;
 
           default:

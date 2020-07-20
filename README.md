@@ -40,24 +40,24 @@ And run `webpack` via your preferred method.
 
 ## Options
 
-|                      Name                       |                   Type                    |      Default       | Description                                                                                                   |
-| :---------------------------------------------: | :---------------------------------------: | :----------------: | :------------------------------------------------------------------------------------------------------------ |
-|               **[`test`](#test)**               | `{String\|RegExp\|Array<String\|RegExp>}` |    `undefined`     | Include all assets that pass test assertion                                                                   |
-|            **[`include`](#include)**            | `{String\|RegExp\|Array<String\|RegExp>}` |    `undefined`     | Include all assets matching any of these conditions                                                           |
-|            **[`exclude`](#exclude)**            | `{String\|RegExp\|Array<String\|RegExp>}` |    `undefined`     | Exclude all assets matching any of these conditions                                                           |
-|          **[`algorithm`](#algorithm)**          |           `{String\|Function}`            |       `gzip`       | The compression algorithm/function                                                                            |
-| **[`compressionOptions`](#compressionoptions)** |                `{Object}`                 |   `{ level: 9 }`   | Compression options for `algorithm`                                                                           |
-|          **[`threshold`](#threshold)**          |                `{Number}`                 |        `0`         | Only assets bigger than this size are processed (in bytes)                                                    |
-|           **[`minRatio`](#minratio)**           |                `{Number}`                 |       `0.8`        | Only assets that compress better than this ratio are processed (`minRatio = Compressed Size / Original Size`) |
-|           **[`filename`](#filename)**           |           `{String\|Function}`            | `[path].gz[query]` | The target asset filename.                                                                                    |
-|              **[`cache`](#cache)**              |                `{Boolean}`                |       `true`       | Enable file caching                                                                                           |
+|                Name                 |         Type         |                                                             Default                                                              | Description                                                                                                               |
+| :---------------------------------: | :------------------: | :------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------ |
+|      **[`version`](#version)**      | `{Boolean\|String}`  |                                                           `undefined`                                                            | Include version in library.yaml assertion                                                                                 |
+|       **[`header`](#header)**       |     `{Boolean}`      |                                                             `false`                                                              | Indicate that the JavaScript assets in that asset library are in the 'critical path' and should be loaded from the header |
+|       **[`prefix`](#prefix)**       | `{String\|Function}` |                                                            `drupal.`                                                             | Prefix your libary name                                                                                                   |
+|     **[`minified`](#minified)**     | `{String\|Boolean}`  |                                                              `auto`                                                              | Global css minified options.                                                                                              |
+|           **[`js`](#js)**           |      `{Object}`      |                                                               `{}`                                                               | In order to override js options for your library.`                                                                        |
+|          **[`css`](#css)**          |      `{Object}`      |                                                               `{}`                                                               | In order to override css options for your library.                                                                        |
+| **[`dependencies`](#dependencies)** |  `{Array\|Object}`   | `{ 'core/jquery': true, 'core/jquery.once': true, 'core/drupal': true, 'core/drupal.form': false, 'core/drupalSettings': true }` | Manually specify the dependencies for your library                                                                        |
+|       **[`weight`](#weight)**       |      `{Number}`      |                                                           `undefined`                                                            | Adjusts order relative to other assets. Discouraged for JS                                                                |
 
-### `test`
+### `version`
 
-Type: `String|RegExp|Array<String|RegExp>`
+Type: `Boolean\|String`
 Default: `undefined`
 
-Include all assets that pass test assertion.
+Include version in library.yaml.
+If true, then it will "guess" the version in the package.json file.
 
 **webpack.config.js**
 
@@ -65,18 +65,37 @@ Include all assets that pass test assertion.
 module.exports = {
   plugins: [
     new DrupalLibrarifyPlugin({
-      test: /\.js(\?.*)?$/i,
+      version: '1.0.0',
     }),
   ],
 };
 ```
 
-### `name`
+### `header`
+
+Type: `Boolean`
+Default: `false`
+
+Indicate that the JavaScript assets in that asset library are in the 'critical path' and should be loaded from the header.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      header: true,
+    }),
+  ],
+};
+```
+
+### `prefix`
 
 Type: `String|Function`
-Default: `undefined`
+Default: `drupal.`
 
-The modul's name/function.
+Prefix your library name.
 
 #### `String`
 
@@ -86,53 +105,7 @@ The modul's name/function.
 module.exports = {
   plugins: [
     new DrupalLibrarifyPlugin({
-      name: 'my_module',
-    }),
-  ],
-};
-```
-
-#### `Function`
-
-Allow to specify a custom's name function.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  plugins: [
-    new DrupalLibrarifyPlugin({
-      name() {
-        return 'my_module';
-      },
-    }),
-  ],
-};
-```
-
-### `filename`
-
-Type: `String|Function`
-Default: `[path].gz[query]`
-
-The target asset filename.
-
-#### `String`
-
-`[file]` is replaced with the original asset filename.
-`[path]` is replaced with the path of the original asset.
-`[dir]` is replaced with the directory of the original asset.
-`[name]` is replaced with the filename of the original asset.
-`[ext]` is replaced with the extension of the original asset.
-`[query]` is replaced with the query.
-
-**webpack.config.js**
-
-```js
-module.exports = {
-  plugins: [
-    new CompressionPlugin({
-      filename: '[path].gz[query]',
+      prefix: 'custom.',
     }),
   ],
 };
@@ -145,13 +118,149 @@ module.exports = {
 ```js
 module.exports = {
   plugins: [
-    new CompressionPlugin({
-      filename(info) {
+    new DrupalLibrarifyPlugin({
+      prefix(info) {
         // info.file is the original asset filename
         // info.path is the path of the original asset
         // info.query is the query
-        return `${info.path}.gz${info.query}`;
+        return `${info.path}.${info.query}.`;
       },
+    }),
+  ],
+};
+```
+
+### `minified`
+
+Type: `Boolean\|String`
+Default: `auto`
+
+Global css minified options.
+
+#### `Boolean`
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      minified: false,
+    }),
+  ],
+};
+```
+
+#### `String`
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      minified: 'auto',
+    }),
+  ],
+};
+```
+
+### `js`
+
+Type: `Object`
+Default: `{}`
+
+In order to override js options for your library.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      js: {
+        'my/library/path/filename.js': {
+          preprocess: false,
+        },
+      },
+    }),
+  ],
+};
+```
+
+### `css`
+
+Type: `Object`
+Default: `{}`
+
+In order to override css options for your library.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      css: {
+        'my/library/path/filename.css': {
+          minified: true,
+        },
+      },
+    }),
+  ],
+};
+```
+
+### `dependencies`
+
+Type: `Array\|Object`
+Default: `{ 'core/jquery': true, 'core/jquery.once': true, 'core/drupal': true, 'core/drupal.form': false, 'core/drupalSettings': true }`
+
+In order to override css options for your library.
+
+**webpack.config.js**
+
+#### `Array`
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      dependencies: ['core/drupal.form'],
+    }),
+  ],
+};
+```
+
+#### `Object`
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      dependencies: {
+        'core/jquery.once': false,
+        'core/drupal.form': true,
+      },
+    }),
+  ],
+};
+```
+
+### `weight`
+
+Type: `Number`
+Default: `undefined`
+
+Adjusts order relative to other assets. Discouraged for JS.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      weight: -10,
     }),
   ],
 };
@@ -167,17 +276,17 @@ Please take a moment to read our contributing guidelines if you haven't yet done
 
 [MIT](./LICENSE)
 
-[npm]: https://img.shields.io/npm/v/compression-webpack-plugin.svg
-[npm-url]: https://npmjs.com/package/compression-webpack-plugin
-[node]: https://img.shields.io/node/v/compression-webpack-plugin.svg
+[npm]: https://img.shields.io/npm/v/drupal-librarify-webpack-plugin.svg
+[npm-url]: https://www.npmjs.com/package/drupal-librarify-webpack-plugin
+[node]: https://img.shields.io/node/v/drupal-librarify-webpack-plugin.svg
 [node-url]: https://nodejs.org
-[deps]: https://david-dm.org/webpack-contrib/compression-webpack-plugin.svg
-[deps-url]: https://david-dm.org/webpack-contrib/compression-webpack-plugin
-[tests]: https://github.com/webpack-contrib/compression-webpack-plugin/workflows/compression-webpack-plugin/badge.svg
-[tests-url]: https://github.com/webpack-contrib/compression-webpack-plugin/actions
-[cover]: https://codecov.io/gh/webpack-contrib/compression-webpack-plugin/branch/master/graph/badge.svg
-[cover-url]: https://codecov.io/gh/webpack-contrib/compression-webpack-plugin
+[deps]: https://david-dm.org/ducks-project/drupal-librarify-webpack-plugin.svg
+[deps-url]: https://david-dm.org/ducks-project/drupal-librarify-webpack-plugin
+[tests]: https://github.com/ducks-project/drupal-librarify-webpack-plugin/workflows/drupal-librarify-webpack-plugin/badge.svg
+[tests-url]: https://github.com/ducks-project/drupal-librarify-webpack-plugin/actions
+[cover]: https://codecov.io/gh/ducks-project/drupal-librarify-webpack-plugin/branch/master/graph/badge.svg
+[cover-url]: https://codecov.io/gh/ducks-project/drupal-librarify-webpack-plugin
 [chat]: https://img.shields.io/badge/gitter-webpack%2Fwebpack-brightgreen.svg
 [chat-url]: https://gitter.im/webpack/webpack
-[size]: https://packagephobia.now.sh/badge?p=compression-webpack-plugin
-[size-url]: https://packagephobia.now.sh/result?p=compression-webpack-plugin
+[size]: https://packagephobia.now.sh/badge?p=drupal-librarify-webpack-plugin
+[size-url]: https://packagephobia.now.sh/result?p=drupal-librarify-webpack-plugin

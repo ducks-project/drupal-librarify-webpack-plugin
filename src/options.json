@@ -11,7 +11,19 @@
     },
     "prefix": {
       "description": "A prefix for naming your library.",
-      "type": ["string"]
+      "anyOf": [{ "type": "string" }, { "instanceof": "Function" }]
+    },
+    "minified": {
+      "description": "Global css minified options.",
+      "anyOf": [{ "type": "boolean" }, { "type": "string" }]
+    },
+    "js": {
+      "description": "In order to override js options for your library.",
+      "type": ["object"]
+    },
+    "css": {
+      "description": "In order to override css options for your library.",
+      "type": ["object"]
     },
     "dependencies": {
       "description": "Manually specify the dependencies for your library.",
