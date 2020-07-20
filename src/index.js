@@ -110,7 +110,7 @@ class DrupalLibrarifyWebpackPlugin {
 
     // Guess minified
     if (this.options.minified === 'auto') {
-      this.options.minified = compilation.options.optimization.mnimize;
+      this.options.minified = compilation.options.optimization.minimize;
     }
 
     // Init js and css entry
