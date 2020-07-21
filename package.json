@@ -9,7 +9,7 @@
   "bugs": "https://github.com/ducks-project/drupal-librarify-webpack-plugin/issues",
   "funding": {
     "type": "opencollective",
-    "url": "https://opencollective.com/webpack"
+    "url": "https://opencollective.com/ducks-project"
   },
   "main": "dist/cjs.js",
   "engines": {
