@@ -70,8 +70,13 @@ class DrupalLibrarifyWebpackPlugin {
   }
 
   static initLibraryEntries(source, libraryName) {
-    // Init js and css entry
     const libraries = source;
+
+    if (!(libraryName in libraries)) {
+      libraries[libraryName] = {};
+    }
+
+    // Init js and css entry
     libraries[libraryName].js = {};
     libraries[libraryName].css = {
       base: {},
