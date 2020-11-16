@@ -143,8 +143,9 @@ class DrupalLibrarifyWebpackPlugin {
 
     // Append files.
     compilation.chunks.forEach((chunk) => {
-      const chunkLibraryName =
-        `${this.options.prefix}${chunk.name}` || libraryName;
+      const chunkLibraryName = chunk.name
+        ? `${this.options.prefix}${chunk.name}`
+        : libraryName;
 
       // Only reset new chunk.
       if (chunkLibraryName !== libraryName) {
