@@ -1,11 +1,11 @@
 {
   "name": "drupal-librarify-webpack-plugin",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Prepare and create the library.yml file for Drupal",
   "license": "MIT",
   "repository": "ducks-project/drupal-librarify-webpack-plugin",
   "author": "Adrien Loyant <donaldinou@gmail.com>",
-  "homepage": "https://github.com/ducks-project/drupal-librarify-webpack-plugin",
+  "homepage": "https://ducks-project.github.io/drupal-librarify-webpack-plugin/",
   "bugs": "https://github.com/ducks-project/drupal-librarify-webpack-plugin/issues",
   "funding": {
     "type": "opencollective",

@@ -143,7 +143,8 @@ class DrupalLibrarifyWebpackPlugin {
 
     // Append files.
     compilation.chunks.forEach((chunk) => {
-      const chunkLibraryName = chunk.name || libraryName;
+      const chunkLibraryName =
+        `${this.options.prefix}.${chunk.name}` || libraryName;
 
       // Only reset new chunk.
       if (chunkLibraryName !== libraryName) {
@@ -218,7 +219,12 @@ class DrupalLibrarifyWebpackPlugin {
       typeof libraries[libraryName].js !== 'undefined' ||
       typeof libraries[libraryName].css !== 'undefined'
     ) {
-      fs.writeFileSync(yamlFilepath, yaml.dump(libraries));
+      fs.writeFileSync(
+        yamlFilepath,
+        yaml.dump(libraries, {
+          noRefs: true,
+        })
+      );
     }
   }
 }
