@@ -188,6 +188,12 @@ class DrupalLibrarifyWebpackPlugin {
                 ...this.options.css[pathname],
               };
             }
+
+            // FIXME
+            if (!('theme' in libraries[chunkLibraryName].css)) {
+              libraries[chunkLibraryName].css.theme = {};
+            }
+
             libraries[chunkLibraryName].css.theme[pathname] = options;
             break;
 
