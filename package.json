@@ -1,6 +1,6 @@
 {
   "name": "drupal-librarify-webpack-plugin",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "Prepare and create the library.yml file for Drupal",
   "license": "MIT",
   "repository": "ducks-project/drupal-librarify-webpack-plugin",
