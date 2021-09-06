@@ -149,10 +149,11 @@ class DrupalLibrarifyWebpackPlugin {
         ? `${this.options.prefix}${chunk.name}`
         : libraryName;
 
+      // Merge entries and options in order to delete by value.
       const chunkLibraryOptions =
         chunkLibraryName in this.options.entries
           ? merge({}, this.options, this.options.entries.chunkLibraryName)
-          : this.options;
+          : merge({}, this.options);
       delete chunkLibraryOptions.entries;
 
       // Only reset new chunk.
