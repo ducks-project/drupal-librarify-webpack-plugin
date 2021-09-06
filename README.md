@@ -266,6 +266,29 @@ module.exports = {
 };
 ```
 
+### `entries`
+
+Type: `Object`
+Default: `{}`
+
+In order to override entries options for your library.
+
+**webpack.config.js**
+
+```js
+module.exports = {
+  plugins: [
+    new DrupalLibrarifyPlugin({
+      entries: {
+        mySublibraryModule: {
+          version: '2.0.0',
+        },
+      },
+    }),
+  ],
+};
+```
+
 ## Contributing
 
 Please take a moment to read our contributing guidelines if you haven't yet done so.

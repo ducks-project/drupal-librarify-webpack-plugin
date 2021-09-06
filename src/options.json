@@ -32,6 +32,10 @@
     "weight": {
       "description": "Adjusts order relative to other assets. Discouraged for JS.",
       "type": ["number"]
+    },
+    "entries": {
+      "description": "In order to override all entries options for your library.",
+      "type": ["object"]
     }
   },
   "additionalProperties": false

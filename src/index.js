@@ -28,6 +28,7 @@ class DrupalLibrarifyWebpackPlugin {
       js: {},
       css: {},
       dependencies,
+      entries: {},
       ...opts,
     };
 
@@ -149,10 +150,10 @@ class DrupalLibrarifyWebpackPlugin {
         : libraryName;
 
       const chunkLibraryOptions =
-        chunkLibraryName in this.options
-          ? merge({}, this.options, this.options.chunkLibraryName)
+        chunkLibraryName in this.options.entries
+          ? merge({}, this.options, this.options.entries.chunkLibraryName)
           : this.options;
-      delete chunkLibraryOptions.chunkLibraryName;
+      delete chunkLibraryOptions.entries;
 
       // Only reset new chunk.
       if (chunkLibraryName !== libraryName) {
