@@ -4,7 +4,7 @@ import path from 'path';
 
 import fs from 'fs';
 
-import validateOptions from 'schema-utils';
+import { validate } from 'schema-utils';
 import yaml from 'js-yaml';
 import merge from 'lodash.merge';
 
@@ -31,7 +31,7 @@ class DrupalLibrarifyWebpackPlugin {
       ...opts,
     };
 
-    validateOptions(schema, options, {
+    validate(schema, options, {
       name: 'Drupal Librarify Plugin',
       baseDataPath: 'options',
     });
@@ -102,7 +102,7 @@ class DrupalLibrarifyWebpackPlugin {
     // Try to load an existing file.
     if (fs.existsSync(yamlFilepath)) {
       try {
-        libraries = yaml.safeLoad(fs.readFileSync(yamlFilepath, 'utf8')) || {};
+        libraries = yaml.load(fs.readFileSync(yamlFilepath, 'utf8')) || {};
       } catch (e) {
         libraries[libraryName] = {};
       }

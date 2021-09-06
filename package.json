@@ -41,10 +41,10 @@
     "webpack": "^4.0.0 || ^5.0.0"
   },
   "dependencies": {
-    "js-yaml": "^3.13.1",
+    "js-yaml": "^4.1.0",
     "loader-utils": "^2.0.0",
     "lodash.merge": "^4.6.2",
-    "schema-utils": "^2.6.6"
+    "schema-utils": "^3.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
