@@ -13,13 +13,7 @@ import isEmpty from './Helpers/isEmpty';
 
 class DrupalLibrarifyWebpackPlugin {
   constructor(opts = {}) {
-    const dependencies = {
-      'core/jquery': true,
-      'core/jquery.once': true,
-      'core/drupal': true,
-      'core/drupal.form': false,
-      'core/drupalSettings': true,
-    };
+    const dependencies = DrupalLibrarifyWebpackPlugin.defaultDependencies();
     const options = {
       prefix: 'drupal.',
       version: false,
@@ -32,28 +26,15 @@ class DrupalLibrarifyWebpackPlugin {
       ...opts,
     };
 
+    options.dependencies = DrupalLibrarifyWebpackPlugin.mergeDependencies(
+      dependencies,
+      options.dependencies
+    );
+
     validate(schema, options, {
       name: 'Drupal Librarify Plugin',
       baseDataPath: 'options',
     });
-
-    // Normalize dependencies
-    if (Array.isArray(options.dependencies)) {
-      const entries = new Map();
-      options.dependencies.forEach((dependency) =>
-        entries.set(dependency, true)
-      );
-      options.dependencies = Object.fromEntries(entries);
-    }
-    options.dependencies = {
-      ...dependencies,
-      ...options.dependencies,
-    };
-    options.dependencies = Object.keys(options.dependencies).filter(
-      (dependency) => {
-        return options.dependencies[dependency];
-      }
-    );
 
     this.options = options || {};
   }
@@ -69,6 +50,16 @@ class DrupalLibrarifyWebpackPlugin {
   afterEmitTapCallback(compilation, callback) {
     this.generateYamlFile(compilation);
     callback();
+  }
+
+  static defaultDependencies() {
+    return {
+      'core/jquery': true,
+      'core/jquery.once': true,
+      'core/drupal': true,
+      'core/drupal.form': false,
+      'core/drupalSettings': true,
+    };
   }
 
   static initLibraryEntries(source, libraryName) {
@@ -89,6 +80,31 @@ class DrupalLibrarifyWebpackPlugin {
     };
 
     return libraries;
+  }
+
+  static normalizeDependencies(dependencies) {
+    if (Array.isArray(dependencies)) {
+      const entries = new Map();
+      dependencies.forEach((dependency) => entries.set(dependency, true));
+      dependencies = Object.fromEntries(entries);
+    }
+
+    return dependencies;
+  }
+
+  static mergeDependencies(model, dependencies) {
+    // Merge
+    let result = {
+      ...DrupalLibrarifyWebpackPlugin.normalizeDependencies(model),
+      ...DrupalLibrarifyWebpackPlugin.normalizeDependencies(dependencies),
+    };
+
+    // Filter
+    result = Object.keys(result).filter((dependency) => {
+      return result[dependency];
+    });
+
+    return result;
   }
 
   generateYamlFile(compilation) {
@@ -155,6 +171,12 @@ class DrupalLibrarifyWebpackPlugin {
           ? merge({}, this.options, this.options.entries.chunkLibraryName)
           : merge({}, this.options);
       delete chunkLibraryOptions.entries;
+
+      chunkLibraryOptions.dependencies =
+        DrupalLibrarifyWebpackPlugin.mergeDependencies(
+          DrupalLibrarifyWebpackPlugin.defaultDependencies(),
+          chunkLibraryOptions.dependencies
+        );
 
       // Only reset new chunk.
       if (chunkLibraryName !== libraryName) {
