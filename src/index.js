@@ -83,13 +83,15 @@ class DrupalLibrarifyWebpackPlugin {
   }
 
   static normalizeDependencies(dependencies) {
-    if (Array.isArray(dependencies)) {
+    let result = dependencies;
+
+    if (Array.isArray(result)) {
       const entries = new Map();
-      dependencies.forEach((dependency) => entries.set(dependency, true));
-      dependencies = Object.fromEntries(entries);
+      result.forEach((dependency) => entries.set(dependency, true));
+      result = Object.fromEntries(entries);
     }
 
-    return dependencies;
+    return result;
   }
 
   static mergeDependencies(model, dependencies) {
